@@ -90,3 +90,17 @@ CREATE TABLE IF NOT EXISTS `oauth_identities` (
   CONSTRAINT `fk_oauth_identities_user`
     FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ── whitelist_users ─────────────────────────────────────────────────────────
+
+CREATE TABLE IF NOT EXISTS `whitelist_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT '',
+  `role_label` varchar(100) DEFAULT 'Member',
+  `is_admin` tinyint(1) DEFAULT 0,
+  `created_by_email` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `idx_whitelist_email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

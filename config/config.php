@@ -39,6 +39,7 @@ return [
         'mailersend_key' => getenv('MAILERSEND_KEY')   ?: '',
     ],
     'auth' => [
+        'admin_emails'     => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ADMIN_EMAILS') ?: getenv('INITIAL_ADMIN_EMAILS') ?: ''))))),
         'allowed_emails'   => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ALLOWED_EMAILS') ?: ''))))),
         'allowed_domains'  => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ALLOWED_DOMAINS') ?: ''))))),
         'allow_magic_link' => filter_var(getenv('ALLOW_MAGIC_LINK') ?: 'false', FILTER_VALIDATE_BOOLEAN),

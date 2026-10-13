@@ -45,6 +45,14 @@ return [
         'from_name'      => getenv('MAIL_FROM_NAME')    ?: 'TOTPVault',
     ],
 
+    // ── Access Control & Auth ─────────────────────────────────────────────
+    'auth' => [
+        'admin_emails'     => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ADMIN_EMAILS') ?: getenv('INITIAL_ADMIN_EMAILS') ?: ''))))),
+        'allowed_emails'   => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ALLOWED_EMAILS') ?: ''))))),
+        'allowed_domains'  => array_values(array_filter(array_map('trim', explode(',', strtolower(getenv('ALLOWED_DOMAINS') ?: ''))))),
+        'allow_magic_link' => false,
+    ],
+
     // ── OAuth providers ────────────────────────────────────────────────────
     // Redirect URIs are derived from APP_URL automatically.
     // Leave client_id empty to effectively disable a provider.

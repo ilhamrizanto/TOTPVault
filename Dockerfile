@@ -74,4 +74,9 @@ RUN { \
 
 EXPOSE 80
 
-# Apache runs in the foreground by default via the base image entrypoint.
+# ── 10. Container Entrypoint (Auto-Init DB & Admin Seeding) ───────────────────
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["apache2-foreground"]
