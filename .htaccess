@@ -1,7 +1,22 @@
-# Root .htaccess — route all requests to front controller
+# Root .htaccess — Production-grade security & routing for TOTPVault
+Options -Indexes
+ServerSignature Off
+
 RewriteEngine On
 
-# If the requested file or directory exists, serve it directly
+# ── 1. Block access to sensitive files and extensions ─────────────────────
+<FilesMatch "(^\.env|\.(sql|log|ini|env|md|lock|yml|yaml|bat|sh|json|bak|swp)$|Dockerfile|Makefile)">
+    Require all denied
+</FilesMatch>
+
+# ── 2. Block hidden files (.git, .env, etc.) ─────────────────────────────
+RewriteRule ^\.(.*)$ - [F,L]
+
+# ── 3. Block direct web access to internal application directories ───────
+RewriteRule ^(config|src|sessions|templates|migrations|charts|mariadb|backups)/ - [F,L]
+
+# ── 4. Front controller routing ──────────────────────────────────────────
+# If the requested static asset exists, serve it directly (CSS, JS, images)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 

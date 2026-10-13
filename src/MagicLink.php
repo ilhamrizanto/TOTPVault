@@ -12,6 +12,10 @@ class MagicLink {
 
     public function create(string $email): string {
         $email = strtolower(trim($email));
+        $auth = new Auth();
+        if (!$auth->isEmailAllowed($email)) {
+            throw new RuntimeException("Akses Ditolak: Email ({$email}) tidak terdaftar dalam whitelist sistem. Hubungi Administrator untuk didaftarkan.");
+        }
         $stmt = $this->db->prepare(
             'SELECT COUNT(*) FROM magic_links WHERE email = ? AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)'
         );
@@ -22,10 +26,9 @@ class MagicLink {
         $this->db->prepare('DELETE FROM magic_links WHERE email = ? AND used = 0')->execute([$email]);
         $token     = bin2hex(random_bytes(self::TOKEN_BYTES));
         $tokenHash = hash('sha256', $token);
-        $expiresAt = date('Y-m-d H:i:s', time() + self::TTL_SECONDS);
         $this->db->prepare(
-            'INSERT INTO magic_links (email, token_hash, expires_at) VALUES (?, ?, ?)'
-        )->execute([$email, $tokenHash, $expiresAt]);
+            'INSERT INTO magic_links (email, token_hash, expires_at) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL ' . self::TTL_SECONDS . ' SECOND))'
+        )->execute([$email, $tokenHash]);
         $appUrl = rtrim($this->cfg['app_url'], '/');
         return "{$appUrl}/auth/magic?token={$token}&email=" . urlencode($email);
     }

@@ -57,7 +57,9 @@ CREATE TABLE IF NOT EXISTS `otp_profiles` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
-  INDEX `idx_otp_profiles_user_id` (`user_id`)
+  INDEX `idx_otp_profiles_user_id` (`user_id`),
+  CONSTRAINT `fk_otp_profiles_user`
+    FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `profile_shares` (
@@ -69,6 +71,24 @@ CREATE TABLE IF NOT EXISTS `profile_shares` (
   `can_edit` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
+  UNIQUE INDEX `uniq_profile_share_email` (`profile_id`, `shared_with_email`),
   INDEX `idx_profile_shares_profile_id` (`profile_id`),
-  INDEX `idx_profile_shares_shared_with_email` (`shared_with_email`)
+  INDEX `idx_profile_shares_shared_with_email` (`shared_with_email`),
+  INDEX `idx_profile_shares_shared_with_user_id` (`shared_with_user_id`),
+  CONSTRAINT `fk_profile_shares_profile`
+    FOREIGN KEY (`profile_id`) REFERENCES `otp_profiles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_profile_shares_shared_by`
+    FOREIGN KEY (`shared_by_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS `whitelist_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(255) DEFAULT '',
+  `role_label` varchar(100) DEFAULT 'Member',
+  `is_admin` tinyint(1) DEFAULT 0,
+  `created_by_email` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `idx_whitelist_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

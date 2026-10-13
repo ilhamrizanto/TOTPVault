@@ -30,9 +30,24 @@ class Auth {
     public function currentUser(): ?array {
         $this->startSession();
         if (empty($_SESSION['user_id'])) return null;
-        $stmt = $this->db->prepare('SELECT * FROM users WHERE id = ?');
+        $stmt = $this->db->prepare('
+            SELECT u.*, COALESCE(w.is_admin, 0) AS is_admin, w.role_label
+            FROM users u
+            LEFT JOIN whitelist_users w ON LOWER(w.email) = LOWER(u.email)
+            WHERE u.id = ?
+        ');
         $stmt->execute([$_SESSION['user_id']]);
-        return $stmt->fetch() ?: null;
+        $u = $stmt->fetch();
+        if (!$u) return null;
+
+        // Security check: Verify that the user is still in the active whitelist
+        if (!$this->isEmailAllowed((string)$u['email'])) {
+            $this->logout();
+            return null;
+        }
+
+        $u['is_admin'] = (int)($u['is_admin'] ?? 0);
+        return $u;
     }
 
     public function requireLogin(): array {
@@ -66,6 +81,10 @@ class Auth {
 
         if ($providerId === '' || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
             throw new RuntimeException('OAuth provider returned incomplete user information.');
+        }
+
+        if (!$this->isEmailAllowed($email)) {
+            throw new RuntimeException("Akses Ditolak: Akun ({$email}) tidak terdaftar dalam whitelist sistem. Hubungi Administrator untuk didaftarkan.");
         }
 
         $this->db->beginTransaction();
@@ -118,6 +137,54 @@ class Auth {
         $stmt = $this->db->prepare('SELECT * FROM users WHERE email = ?');
         $stmt->execute([$email]);
         return $stmt->fetch() ?: null;
+    }
+
+    /**
+     * Check whether an email is allowed to access this vault.
+     * Evaluates allowed_emails, allowed_domains, and pre-registered users.
+     */
+    public function isEmailAllowed(string $email): bool {
+        $email = strtolower(trim($email));
+        $allowedEmails  = $this->cfg['auth']['allowed_emails'] ?? [];
+        $allowedDomains = $this->cfg['auth']['allowed_domains'] ?? [];
+
+        // 1. Cek tabel database whitelist_users (Daftar Otorisasi Akun Internal)
+        if ($this->tableExists('whitelist_users')) {
+            $hasEntries = (int)$this->db->query('SELECT COUNT(*) FROM whitelist_users')->fetchColumn() > 0;
+            if ($hasEntries) {
+                $stmt = $this->db->prepare('SELECT COUNT(*) FROM whitelist_users WHERE LOWER(email) = ?');
+                $stmt->execute([$email]);
+                if ((int)$stmt->fetchColumn() > 0) {
+                    return true;
+                }
+                // Cek juga fallback dari .env jika ada
+                if (in_array($email, $allowedEmails, true)) {
+                    return true;
+                }
+                $domain = substr(strrchr($email, "@"), 1);
+                if ($domain && in_array(strtolower($domain), $allowedDomains, true)) {
+                    return true;
+                }
+                // Tidak ada di whitelist_users maupun .env -> TOLAK!
+                return false;
+            }
+        }
+
+        // 2. Jika whitelist_users belum ada/kosong, cek konfigurasi .env
+        if (empty($allowedEmails) && empty($allowedDomains)) {
+            return true;
+        }
+
+        if (in_array($email, $allowedEmails, true)) {
+            return true;
+        }
+
+        $domain = substr(strrchr($email, "@"), 1);
+        if ($domain && in_array(strtolower($domain), $allowedDomains, true)) {
+            return true;
+        }
+
+        return false;
     }
 
     private function findUserByOAuthIdentity(string $provider, string $providerId): ?array {
