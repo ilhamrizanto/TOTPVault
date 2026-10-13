@@ -42,7 +42,11 @@ header('X-Content-Type-Options: nosniff');
 header('X-XSS-Protection: 1; mode=block');
 header('Referrer-Policy: strict-origin-when-cross-origin');
 header('Permissions-Policy: geolocation=(), camera=(), microphone=()');
-if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
+$isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+    || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    || str_starts_with($cfg['app_url'] ?? '', 'https://');
+
+if ($isHttps) {
     header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
 }
 
@@ -63,7 +67,7 @@ session_set_cookie_params([
     'path'     => '/',
     'httponly' => true,
     'samesite' => 'Lax',
-    'secure'   => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on',
+    'secure'   => $isHttps,
 ]);
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

@@ -16,10 +16,13 @@ class Auth {
         if (session_status() === PHP_SESSION_NONE) {
             $cookieName = $this->cfg['session']['cookie_name'];
             session_name($cookieName);
+            $isHttps = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+                || str_starts_with($this->cfg['app_url'] ?? '', 'https://');
             session_set_cookie_params([
                 'lifetime' => $this->cfg['session']['lifetime'],
                 'path'     => '/',
-                'secure'   => isset($_SERVER['HTTPS']),
+                'secure'   => $isHttps,
                 'httponly' => true,
                 'samesite' => 'Lax',
             ]);
