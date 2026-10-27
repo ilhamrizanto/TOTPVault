@@ -1,31 +1,54 @@
 # TOTPVault
 
-A self-hosted TOTP (Time-based One-Time Password) manager built with PHP. Secret keys are AES-256-GCM encrypted on the server and **never transmitted to the client**. OTP codes are generated server-side and can be shared with teammates without ever exposing the underlying secrets.
+> **A modern, self-hosted TOTP (Time-based One-Time Password) vault built with PHP & MariaDB.**  
+> Secret keys are AES-256-GCM encrypted on the server and **never transmitted to the client**. OTP codes are generated server-side and can be shared securely with teammates without ever exposing the underlying secrets.
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
+[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?logo=php&logoColor=white)](https://php.net)
+[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](docker-compose.yml)
+[![Dokploy](https://img.shields.io/badge/Dokploy-Tested-10b981)](https://dokploy.com)
 
 ---
 
-## Features
+### 📌 Upstream Attribution & Notice of Modification
+This project is an **enhanced, standalone community fork** based on the open-source architecture of [Token2 TOTPVault](https://github.com/token2/TOTPVault) developed by [TOKEN2 Multifactor Authentication](https://www.token2.swiss) (Switzerland), licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
+
+> **Disclaimer:** This fork is independently maintained by [@rizanto](https://github.com/rizanto) and is not officially affiliated with, endorsed by, or sponsored by Token2. All original copyrights and trade rights belong to their respective owners.
+
+---
+
+## ✨ Key Enhancements in this Fork
+
+- 🎨 **Modern Startup-Grade Interface**: Completely revamped frontend with a sleek floating glassmorphic topbar, responsive mobile drawer, refined dark mode typography, and transparent Chrono-Vault branding.
+- ⚡ **Zero-Touch Database Auto-Init & Admin Seeding**: Containers automatically detect missing database schemas, execute migrations on startup, and seed initial administrator accounts specified via `ADMIN_EMAILS` in `.env`.
+- 🌐 **Dokploy, Traefik & Cloudflare Production Ready**: Native reverse proxy support (`X-Forwarded-Proto` auto-detection) ensuring seamless SSL termination, strict HTTPS session cookie security, and zero-headache deployment on Dokploy/Coolify/Traefik.
+- 🩺 **Pre-Flight Medical Diagnostic Suite**: Built-in CLI health checker (`php tools/health-check.php`) verifying 47 critical checkpoints across PHP runtime, cryptographic integrity, RFC 6238 TOTP vectors, database schema, and filesystem permissions.
+- 🛡️ **Streamlined Enterprise Access**: Pure, robust OAuth 2.0 / OIDC authentication (Google, Microsoft, GitHub, Keycloak) with role-based access control (`Administrator` vs `Member` whitelists).
+
+---
+
+## Core Features
 
 - **Server-side code generation** — secrets are decrypted in memory only at generation time and never sent to the browser
 - **AES-256-GCM encryption** — every secret is encrypted at rest with a unique 96-bit nonce per record
-- **Multiple login methods** — OAuth 2.0/OIDC via Google, Microsoft, GitHub, or Keycloak; passwordless magic links via email
+- **Enterprise OAuth 2.0 / OIDC** — Google, Microsoft, GitHub, and Keycloak integration out of the box
 - **Token sharing** — share individual OTP profiles with colleagues by email; they can view codes (or optionally edit settings) without ever seeing the secret
 - **QR code import** — paste or drag an `otpauth://` QR image directly in the browser to auto-fill all token fields
 - **Hide mode** — mask a token's code until clicked; it reveals for 10 seconds then hides itself again
 - **Full RFC 6238 support** — SHA1, SHA256, SHA512 · 6, 8, or 10 digit codes · configurable time periods
 - **Icon & colour tagging** — assign any Font Awesome brand or solid icon and one of 16 accent colours to each token for quick visual identification
-- **Google Authenticator bulk import** - import your Google Authenticator accounts via the otpauth-migration QR images
-- **Export profiles** — download your TOTP profiles (owned or with edit rights) as a CSV file containing decrypted seeds, compatible with [Molto2](https://www.token2.ch/shop/product/molto-2-v2-multi-profile-totp-programmable-hardware-token) bulk import [feature](https://www.token2.swiss/site/page/molto-2-usb-config-tool)
+- **Google Authenticator bulk import** — import your Google Authenticator accounts via the otpauth-migration QR images
+- **Export profiles** — download your TOTP profiles (owned or with edit rights) as a CSV file containing decrypted seeds, compatible with [Molto2](https://www.token2.ch/shop/product/molto-2-v2-multi-profile-totp-programmable-hardware-token) bulk import
 
 ---
 
 ## Requirements
 
-- PHP 8.1+
+- PHP 8.1+ (PHP 8.2+ recommended)
 - MySQL 5.7+ or MariaDB 10.3+
 - Apache with `mod_rewrite` enabled (`AllowOverride All`)
-- A [MailerSend](https://www.mailersend.com) account (for magic link emails)
 - OpenSSL PHP extension (for AES-256-GCM)
+- cURL extension (for OAuth providers)
 
 ---
 
@@ -34,8 +57,8 @@ A self-hosted TOTP (Time-based One-Time Password) manager built with PHP. Secret
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/token2/TOTPvault.git
-cd totpvault
+git clone https://github.com/rizanto/TOTPVault.git
+cd TOTPVault
 ```
 
 ### 2. Create the database
@@ -389,7 +412,7 @@ A complete Docker setup is included for local or self-hosted deployment. It runs
 
 ```bash
 # 1. Clone and enter the project
-git clone https://github.com/token2/TOTPvault.git
+git clone https://github.com/rizanto/TOTPVault.git
 cd TOTPVault
 
 # 2. Create your environment file — then configure a login method
@@ -559,10 +582,10 @@ helm install totpvault ./charts/totpvault -n totpvault --create-namespace
 
 The application image is published automatically to `ghcr.io/token2/totpvault` by GitHub Actions. See the [chart README](charts/totpvault/README.md) for required values, secrets, ingress/TLS setup, and upgrade considerations. Docker Compose (above) remains the recommended path for local development and simple single-host deployments.
 
----
-
 ## Demo
-Check out the live demo here: [Live Demo](https://totp.token2.swiss/)
+
+- **Live Community Deployment**: [totp.rizanto.web.id](https://totp.rizanto.web.id/)
+- **Upstream Original Demo**: [totp.token2.swiss](https://totp.token2.swiss/)
 
 ## Screenshots
 
@@ -575,6 +598,24 @@ Check out the live demo here: [Live Demo](https://totp.token2.swiss/)
 
 ---
 
+## Upstream & Acknowledgements
+
+- **Original Base Architecture & Concept**: [Token2 TOTPVault](https://github.com/token2/TOTPVault) by **TOKEN2 Multifactor Authentication** (Geneva, Switzerland). We express our gratitude to Token2 for releasing the foundational open-source code under GPL-3.0.
+- **Enhanced Community Edition**: Maintained and developed by [@rizanto](https://github.com/rizanto).
+- **Third-Party Libraries & Assets**:
+  - [jsQR](https://github.com/cozmo/jsQR) — Client-side QR code parsing (Apache 2.0).
+  - [Font Awesome Free](https://fontawesome.com) — Dashboard and brand iconography (CC BY 4.0 / SIL OFL 1.1).
+  - Chrono-Vault vector brand icon & transparent assets designed for this edition.
+
+---
+
 ## License
 
-GPL
+This project is licensed under the **GNU General Public License v3.0 (GPL-3.0)**.  
+See the full license text in the [LICENSE](LICENSE) file.
+
+Under the terms of GPL-3.0:
+- You are free to run, study, share, and modify this software.
+- Any distributed derivative work must also be licensed under GPL-3.0 and provide complete source code.
+- Original copyright notices and notices of modification must be preserved.
+
