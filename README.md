@@ -13,7 +13,7 @@
 ### 📌 Upstream Attribution & Notice of Modification
 This project is an **enhanced, standalone community fork** based on the open-source architecture of [Token2 TOTPVault](https://github.com/token2/TOTPVault) developed by [TOKEN2 Multifactor Authentication](https://www.token2.swiss) (Switzerland), licensed under the **GNU General Public License v3.0 (GPL-3.0)**.
 
-> **Disclaimer:** This fork is independently maintained by [@rizanto](https://github.com/rizanto) and is not officially affiliated with, endorsed by, or sponsored by Token2. All original copyrights and trade rights belong to their respective owners.
+> **Disclaimer:** This fork is independently maintained by [@ilhamrizanto](https://github.com/ilhamrizanto) and is not officially affiliated with, endorsed by, or sponsored by Token2. All original copyrights and trade rights belong to their respective owners.
 
 ---
 
@@ -57,7 +57,7 @@ This project is an **enhanced, standalone community fork** based on the open-sou
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/rizanto/TOTPVault.git
+git clone https://github.com/ilhamrizanto/TOTPVault.git
 cd TOTPVault
 ```
 
@@ -412,7 +412,7 @@ A complete Docker setup is included for local or self-hosted deployment. It runs
 
 ```bash
 # 1. Clone and enter the project
-git clone https://github.com/rizanto/TOTPVault.git
+git clone https://github.com/ilhamrizanto/TOTPVault.git
 cd TOTPVault
 
 # 2. Create your environment file — then configure a login method
@@ -601,7 +601,7 @@ The application image is published automatically to `ghcr.io/token2/totpvault` b
 ## Upstream & Acknowledgements
 
 - **Original Base Architecture & Concept**: [Token2 TOTPVault](https://github.com/token2/TOTPVault) by **TOKEN2 Multifactor Authentication** (Geneva, Switzerland). We express our gratitude to Token2 for releasing the foundational open-source code under GPL-3.0.
-- **Enhanced Community Edition**: Maintained and developed by [@rizanto](https://github.com/rizanto).
+- **Enhanced Community Edition**: Maintained and developed by [@ilhamrizanto](https://github.com/ilhamrizanto).
 - **Third-Party Libraries & Assets**:
   - [jsQR](https://github.com/cozmo/jsQR) — Client-side QR code parsing (Apache 2.0).
   - [Font Awesome Free](https://fontawesome.com) — Dashboard and brand iconography (CC BY 4.0 / SIL OFL 1.1).

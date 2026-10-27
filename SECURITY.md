@@ -5,7 +5,7 @@
 Security is a paramount priority for **TOTPVault**. If you discover a vulnerability or security flaw in this fork:
 
 1. **Please DO NOT report security issues via public GitHub issues.**
-2. Instead, please report it privately via **[GitHub Private Vulnerability Reporting](https://github.com/rizanto/TOTPVault/security/advisories/new)** on this repository, or contact the maintainer directly.
+2. Instead, please report it privately via **[GitHub Private Vulnerability Reporting](https://github.com/ilhamrizanto/TOTPVault/security/advisories/new)** on this repository, or contact the maintainer directly.
 3. Include detailed steps to reproduce the issue, proof of concept (if available), and the affected environment or component.
 
 We appreciate responsible disclosure and will investigate and address reported vulnerabilities promptly.
