@@ -121,7 +121,10 @@ class MedicalCheckup {
         });
 
         $this->section("6. Live HTTP Endpoints & Security Headers", function() {
-            $healthUrl = 'http://localhost:8000/api/health';
+            $baseDir = dirname(__DIR__);
+            $cfg = require $baseDir . '/config/config.php';
+            $port = (int)($cfg['app_port'] ?? 8088);
+            $healthUrl = "http://localhost:{$port}/api/health";
             $ctx = stream_context_create(['http' => ['timeout' => 3, 'ignore_errors' => true]]);
             $body = @file_get_contents($healthUrl, false, $ctx);
             $headers = $http_response_header ?? [];

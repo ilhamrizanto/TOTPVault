@@ -31,7 +31,8 @@ return [
     ],
     'encryption_key' => getenv('ENCRYPTION_KEY') ?: 'ThisIsA32ByteKeyForLocalTesting!',
     'app_name'   => 'TOTPVault',
-    'app_url'    => rtrim(getenv('APP_URL') ?: 'http://localhost:8000', '/'),
+    'app_port'   => (int)(getenv('APP_PORT') ?: 8088),
+    'app_url'    => rtrim(getenv('APP_URL') ?: 'http://localhost:8088', '/'),
     'app_env'    => getenv('APP_ENV') ?: 'development',
     'mail' => [
         'from_email'     => getenv('MAIL_FROM')        ?: 'noreply@localhost',
@@ -48,7 +49,7 @@ return [
         'google' => [
             'client_id'     => getenv('GOOGLE_CLIENT_ID')     ?: '',
             'client_secret' => getenv('GOOGLE_CLIENT_SECRET') ?: '',
-            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8000') . '/auth/callback/google',
+            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8088') . '/auth/callback/google',
             'auth_url'      => 'https://accounts.google.com/o/oauth2/v2/auth',
             'token_url'     => 'https://oauth2.googleapis.com/token',
             'userinfo_url'  => 'https://www.googleapis.com/oauth2/v3/userinfo',
@@ -57,7 +58,7 @@ return [
         'microsoft' => [
             'client_id'     => getenv('MICROSOFT_CLIENT_ID')     ?: '',
             'client_secret' => getenv('MICROSOFT_CLIENT_SECRET') ?: '',
-            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8000') . '/auth/callback/microsoft',
+            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8088') . '/auth/callback/microsoft',
             'auth_url'      => 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
             'token_url'     => 'https://login.microsoftonline.com/common/oauth2/v2.0/token',
             'userinfo_url'  => 'https://graph.microsoft.com/v1.0/me',
@@ -66,7 +67,7 @@ return [
         'github' => [
             'client_id'     => getenv('GITHUB_CLIENT_ID')     ?: '',
             'client_secret' => getenv('GITHUB_CLIENT_SECRET') ?: '',
-            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8000') . '/auth/callback/github',
+            'redirect_uri'  => (getenv('APP_URL') ?: 'http://localhost:8088') . '/auth/callback/github',
             'auth_url'      => 'https://github.com/login/oauth/authorize',
             'token_url'     => 'https://github.com/login/oauth/access_token',
             'userinfo_url'  => 'https://api.github.com/user',
@@ -78,7 +79,7 @@ return [
             'base_url'      => rtrim(getenv('KEYCLOAK_BASE_URL') ?: '', '/'),
             'internal_base_url' => rtrim(getenv('KEYCLOAK_INTERNAL_BASE_URL') ?: '', '/'),
             'realm'         => getenv('KEYCLOAK_REALM') ?: '',
-            'redirect_uri'  => getenv('KEYCLOAK_REDIRECT_URI') ?: ((rtrim(getenv('APP_URL') ?: 'http://localhost:8000', '/')) . '/auth/callback/keycloak'),
+            'redirect_uri'  => getenv('KEYCLOAK_REDIRECT_URI') ?: ((rtrim(getenv('APP_URL') ?: 'http://localhost:8088', '/')) . '/auth/callback/keycloak'),
             'scope'         => getenv('KEYCLOAK_SCOPE') ?: 'openid email profile',
         ],
     ],

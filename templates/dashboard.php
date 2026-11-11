@@ -4533,9 +4533,9 @@ function renderIcons(filter) {
 function iconBtn(icon, prefix, current) {
   const sel = current === icon;
   return `<button type="button" onclick="selectIcon('${icon}','${prefix}')"
-    style="width:30px;height:30px;border-radius:6px;border:1px solid ${sel ? 'var(--teal-700)' : 'var(--border)'};
-           background:${sel ? 'var(--emerald-l)' : '#fff'};color:${sel ? 'var(--emerald-h)' : 'var(--ink-3)'};
-           cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.875rem;transition:all .15s">
+    style="width:32px;height:32px;border-radius:8px;border:1px solid ${sel ? 'var(--emerald-border)' : 'var(--border)'};
+           background:${sel ? 'var(--emerald-l)' : 'rgba(255,255,255,0.03)'};color:${sel ? 'var(--emerald-light)' : 'var(--ink-3)'};
+           cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.875rem;transition:transform 140ms ease, background-color 140ms ease, border-color 140ms ease">
     <i class="${prefix} ${icon}"></i>
   </button>`;
 }
@@ -5476,8 +5476,8 @@ function renderAuditSharesTable(shares) {
               </td>
               <td style="padding:.75rem .875rem">
                 ${s.can_edit ? 
-                  '<span style="display:inline-flex;align-items:center;gap:.3rem;font-size:.6875rem;background:var(--emerald-l);color:var(--emerald-h);padding:.15rem .5rem;border-radius:var(--r-pill);font-weight:700"><i class="fa-solid fa-pen-to-square"></i> Boleh Edit</span>' :
-                  '<span style="display:inline-flex;align-items:center;gap:.3rem;font-size:.6875rem;background:#f1f5f9;color:var(--ink-3);padding:.15rem .5rem;border-radius:var(--r-pill);font-weight:600"><i class="fa-solid fa-eye"></i> Hanya Lihat</span>'
+                  '<span class="badge badge-green"><i class="fa-solid fa-pen-to-square"></i> Boleh Edit</span>' :
+                  '<span class="badge badge-neutral"><i class="fa-solid fa-eye"></i> Hanya Lihat</span>'
                 }
               </td>
               <td style="padding:.75rem .875rem;color:var(--ink-3);font-size:.75rem">
